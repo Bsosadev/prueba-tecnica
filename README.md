@@ -1,29 +1,69 @@
-# prueba-tecnica
+# Prueba CRUD con Vue.js
 
-This template should help get you started developing with Vue 3 in Vite.
+Aplicación para gestionar usuarios (crear, editar, eliminar) utilizando Vue.js con API Options. Los datos se almacenan localmente en `localStorage`
 
-## Recommended IDE Setup
+---
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
+## Características
 
-## Customize configuration
+- **CRUD completo**: Crear, leer, actualizar y eliminar usuarios.
+- Uso de modales para crear, editar y confirmar eliminación.
+- Manejo del estado local reactivo en Vue.
+- Persistencia de datos en `localStorage`.
 
-See [Vite Configuration Reference](https://vite.dev/config/).
+---
 
-## Project Setup
+## Tecnologías usadas
 
-```sh
+- Vue.js 3 (API Options)
+- HTML5 y CSS3 (puedes usar Tailwind o estilos propios)
+- LocalStorage para almacenamiento local
+
+---
+
+## Instalación y ejecución
+
+1. Clona este repositorio:
+
+```bash
+git clone https://github.com/Bsosadev/prueba-tecnica
+cd prueba-tecnica
+```
+
+2. Instala dependencias:
+
+```bash
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+3. Ejecuta el servidor de desarrollo:
 
-```sh
+```bash
 npm run dev
 ```
 
-### Compile and Minify for Production
+4. Abre tu navegador en:
 
-```sh
-npm run build
 ```
+http://localhost:5173/
+```
+
+---
+
+## Estructura del proyecto
+
+```
+src/
+├── components/
+│   ├── CreateUserModal.vue
+│   ├── EditUserModal.vue
+│   ├── DeleteUserModal.vue
+│   └── UsersList.vue
+├── App.vue
+└── main.js
+```
+
+- `UsersList.vue`: Componente principal que maneja el estado local y muestra la lista de usuarios.
+- Modales para crear, editar y eliminar usuarios, implementados como componentes independientes.
+
+---
