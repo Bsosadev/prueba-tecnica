@@ -6,18 +6,22 @@ Aplicación para gestionar usuarios (crear, editar, eliminar) utilizando Vue.js 
 
 ## Características
 
-- **CRUD completo**: Crear, leer, actualizar y eliminar usuarios.
-- Uso de modales para crear, editar y confirmar eliminación.
-- Manejo del estado local reactivo en Vue.
-- Persistencia de datos en `localStorage`.
+- ✅ CRUD completo: Crear, leer, actualizar y eliminar usuarios
+- 💬 Modales interactivos para formularios y confirmaciones
+- 🔍 Búsqueda dinámica por nombre, usuario o email
+- 🧠 Validaciones personalizadas con SweetAlert2
+- 💾 Almacenamiento local con `localStorage`
+- 🎨 Interfaz responsiva con TailwindCSS
 
 ---
 
 ## Tecnologías usadas
 
-- Vue.js 3 (API Options)
-- HTML5 y CSS3 (puedes usar Tailwind o estilos propios)
-- LocalStorage para almacenamiento local
+- [Vue.js 3 (Options API)](https://vuejs.org/)
+- [TailwindCSS](https://tailwindcss.com/)
+- [Vite](https://vitejs.dev/)
+- [SweetAlert2](https://sweetalert2.github.io/)
+- LocalStorage (almacenamiento local del navegador)
 
 ---
 
