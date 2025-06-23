@@ -1,5 +1,8 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2">
+  <div
+    v-if="visible"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2"
+  >
     <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
       <button
         @click="$emit('close')"
@@ -13,7 +16,11 @@
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre:</label>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Nombre:</label
+            >
             <input
               type="text"
               id="name"
@@ -23,7 +30,11 @@
             />
           </div>
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Usuario:</label>
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Usuario:</label
+            >
             <input
               type="text"
               id="username"
@@ -33,7 +44,11 @@
             />
           </div>
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico:</label>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Correo electrónico:</label
+            >
             <input
               type="email"
               id="email"
@@ -43,7 +58,11 @@
             />
           </div>
           <div>
-            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono:</label>
+            <label
+              for="phone"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Teléfono:</label
+            >
             <input
               type="text"
               id="phone"
@@ -55,24 +74,28 @@
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors cursor-pointer"
           >
             Agregar Usuario
           </button>
         </div>
       </form>
-
-      <p v-if="errorMessage" class="mt-4 text-sm text-red-600">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   name: "CreateUserModal",
   props: {
     visible: {
       type: Boolean,
+      required: true,
+    },
+    users: {
+      type: Array,
       required: true,
     },
   },
@@ -84,23 +107,71 @@ export default {
         email: "",
         phone: "",
       },
-      errorMessage: "",
     };
   },
+  watch: {
+    visible(newVal) {
+      if (!newVal) {
+        this.resetForm();
+      }
+    },
+  },
   methods: {
+    resetForm() {
+      this.localUser = {
+        name: "",
+        username: "",
+        email: "",
+        phone: "",
+      };
+    },
     validateEmail(email) {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(email);
     },
-    handleSubmit() {
-      this.errorMessage = "";
-
+    async handleSubmit() {
       if (!this.validateEmail(this.localUser.email)) {
-        this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
+        await Swal.fire({
+          icon: "warning",
+          title: "Correo inválido",
+          text: "Por favor, ingresa un correo electrónico válido.",
+        });
+        return;
+      }
+
+      const emailDuplicado = this.users.some(
+        (u) => u.email.toLowerCase() === this.localUser.email.toLowerCase()
+      );
+
+      const phoneDuplicado = this.users.some(
+        (u) => u.phone.trim() === this.localUser.phone.trim()
+      );
+
+      if (emailDuplicado || phoneDuplicado) {
+        let mensaje = "";
+        if (emailDuplicado) mensaje += "El correo ya está en uso.\n";
+        if (phoneDuplicado) mensaje += "El número de teléfono ya está en uso.";
+
+        await Swal.fire({
+          icon: "error",
+          title: "Datos duplicados",
+          text: mensaje,
+        });
+
         return;
       }
 
       this.$emit("add-user", { ...this.localUser });
+
+      this.$emit("close");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Usuario agregado",
+        text: "El usuario fue agregado exitosamente.",
+        timer: 1200,
+        showConfirmButton: false,
+      });
 
       this.localUser = {
         name: "",
@@ -108,8 +179,6 @@ export default {
         email: "",
         phone: "",
       };
-
-      this.$emit("close");
     },
   },
 };
