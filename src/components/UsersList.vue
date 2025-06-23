@@ -3,7 +3,8 @@
         <div class="flex justify-between items-center mb-6">
             <h2 class="text-2xl font-bold text-gray-800">Usuarios</h2>
 
-            <button @click="showModal = true" class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-green-700">
+            <button @click="showModal = true"
+                class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 cursor-pointer">
                 Agregar Usuario
             </button>
         </div>
@@ -49,9 +50,10 @@
             </div>
         </div>
 
-        <CreateUserModal :visible="showModal" @close="showModal = false" @add-user="CreateUserFromModal" />
-        <EditUserModal :visible="showEditModal" :user="userToEdit" @close="showEditModal = false"
-            @update-user="updateUser" />
+        <CreateUserModal :visible="showModal" @close="showModal = false" @add-user="CreateUserFromModal"
+            :users="users" />
+        <EditUserModal :visible="showEditModal" :user="userToEdit" @close="closeEditModal" @update-user="updateUser"
+            :users="users" />
         <DeleteUserModal :visible="showDeleteModal" :user="userToDelete" @close="closeDeleteModal"
             @confirm-delete="deleteUser" v-if="userToDelete" />
     </div>
