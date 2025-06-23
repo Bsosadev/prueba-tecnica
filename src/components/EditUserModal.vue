@@ -55,19 +55,19 @@
         <div class="flex justify-end">
           <button
             type="submit"
-            class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            class="px-4 py-2 bg-blue-600 text-white rounded-xl hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors cursor-pointer"
           >
             Guardar Cambios
           </button>
         </div>
       </form>
-
-      <p v-if="errorMessage" class="mt-4 text-sm text-red-600">{{ errorMessage }}</p>
     </div>
   </div>
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   name: "EditUserModal",
   props: {
@@ -80,18 +80,19 @@ export default {
       required: false,
       default: () => ({}),
     },
+    users: {
+      type: Array,
+      required: true,
+    },
   },
   data() {
     return {
       localUser: { ...this.user },
-      errorMessage: "",
     };
   },
   watch: {
-
     user(newUser) {
       this.localUser = { ...newUser };
-      this.errorMessage = "";
     },
   },
   methods: {
@@ -99,17 +100,52 @@ export default {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(email);
     },
-    handleSubmit() {
-      this.errorMessage = "";
-
+    async handleSubmit() {
       if (!this.validateEmail(this.localUser.email)) {
-        this.errorMessage = "Por favor, ingresa un correo electrónico válido.";
+        await Swal.fire({
+          icon: "warning",
+          title: "Correo inválido",
+          text: "Por favor, ingresa un correo electrónico válido.",
+        });
+        return;
+      }
+
+      const emailDuplicado = this.users.some(
+        (u) =>
+          u.id !== this.localUser.id &&
+          u.email.toLowerCase() === this.localUser.email.toLowerCase()
+      );
+
+      const phoneDuplicado = this.users.some(
+        (u) =>
+          u.id !== this.localUser.id &&
+          u.phone.trim() === this.localUser.phone.trim()
+      );
+
+      if (emailDuplicado || phoneDuplicado) {
+        let mensaje = "";
+        if (emailDuplicado) mensaje += "El correo ya está en uso.\n";
+        if (phoneDuplicado) mensaje += "El número de teléfono ya está en uso.";
+
+        await Swal.fire({
+          icon: "error",
+          title: "Datos duplicados",
+          text: mensaje,
+        });
         return;
       }
 
       this.$emit("update-user", { ...this.localUser });
 
       this.$emit("close");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Cambios guardados",
+        text: "El usuario fue actualizado correctamente.",
+        timer: 1200,
+        showConfirmButton: false,
+      });
     },
   },
 };
