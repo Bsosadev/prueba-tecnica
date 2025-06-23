@@ -17,13 +17,13 @@
       <div class="flex justify-end space-x-4">
         <button
           @click="$emit('close')"
-          class="px-4 py-2 bg-gray-300 text-gray-700 rounded-xl hover:bg-gray-400 focus:outline-none"
+          class="px-4 py-2 bg-gray-300 text-gray-700 rounded-xl hover:bg-gray-400 focus:outline-none cursor-pointer"
         >
           Cancelar
         </button>
         <button
           @click="confirmDelete"
-          class="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 focus:outline-none"
+          class="px-4 py-2 bg-red-600 text-white rounded-xl hover:bg-red-700 focus:outline-none cursor-pointer"
         >
           Eliminar
         </button>
@@ -33,6 +33,8 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
   name: "DeleteUserModal",
   props: {
@@ -46,9 +48,17 @@ export default {
     },
   },
   methods: {
-    confirmDelete() {
+    async confirmDelete() {
       this.$emit("confirm-delete", this.user.id);
       this.$emit("close");
+
+      await Swal.fire({
+        icon: "success",
+        title: "Usuario eliminado",
+        text: `El usuario ${this.user.name} fue eliminado correctamente.`,
+        timer: 1200,
+        showConfirmButton: false,
+      });
     },
   },
 };
