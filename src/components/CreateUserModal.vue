@@ -129,7 +129,37 @@ export default {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(email);
     },
+    isPhoneValid(phone) {
+      return /^\d{9}$/.test(phone);
+    },
     async handleSubmit() {
+      const { name, username, phone, email } = this.localUser;
+
+      if (!name.trim() || !username.trim() || !phone.trim()) {
+        await Swal.fire({
+          icon: "warning",
+          title: "Campos requeridos",
+          text: "Por favor completa los campos de nombre, usuario y teléfono.",
+        });
+        return;
+      }
+
+      if (name.trim().length < 3 || username.trim().length < 3) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Campos inválidos",
+          text: "El nombre y usuario deben tener al menos 3 caracteres.",
+        });
+      }
+
+      if (!this.isPhoneValid(phone)) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Teléfono inválido",
+          text: "El número debe tener exactamente 9 dígitos.",
+        });
+      }
+
       if (!this.validateEmail(this.localUser.email)) {
         await Swal.fire({
           icon: "warning",
