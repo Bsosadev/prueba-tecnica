@@ -1,5 +1,8 @@
 <template>
-  <div v-if="visible" class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2">
+  <div
+    v-if="visible"
+    class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-2"
+  >
     <div class="bg-white rounded-lg shadow-lg w-full max-w-lg p-6 relative">
       <button
         @click="$emit('close')"
@@ -13,7 +16,11 @@
       <form @submit.prevent="handleSubmit" class="space-y-4">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label for="name" class="block text-sm font-medium text-gray-700 mb-1">Nombre:</label>
+            <label
+              for="name"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Nombre:</label
+            >
             <input
               type="text"
               id="name"
@@ -23,7 +30,11 @@
             />
           </div>
           <div>
-            <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Usuario:</label>
+            <label
+              for="username"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Usuario:</label
+            >
             <input
               type="text"
               id="username"
@@ -33,7 +44,11 @@
             />
           </div>
           <div>
-            <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico:</label>
+            <label
+              for="email"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Correo electrónico:</label
+            >
             <input
               type="email"
               id="email"
@@ -43,7 +58,11 @@
             />
           </div>
           <div>
-            <label for="phone" class="block text-sm font-medium text-gray-700 mb-1">Teléfono:</label>
+            <label
+              for="phone"
+              class="block text-sm font-medium text-gray-700 mb-1"
+              >Teléfono:</label
+            >
             <input
               type="text"
               id="phone"
@@ -94,13 +113,47 @@ export default {
     user(newUser) {
       this.localUser = { ...newUser };
     },
+    visible(newVal) {
+      if (!newVal) {
+        this.localUser = { ...this.user };
+      }
+    },
   },
   methods: {
     validateEmail(email) {
       const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
       return re.test(email);
     },
+    isPhoneValid(phone) {
+      return /^\d{9}$/.test(phone);
+    },
     async handleSubmit() {
+      const { name, username, phone, email } = this.localUser;
+
+      if (!name.trim() || !username.trim() || !phone.trim()) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Campos requeridos",
+          text: "Completa los campos de nombre, usuario y teléfono.",
+        });
+      }
+
+      if (name.trim().length < 3 || username.trim().length < 3) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Campos inválidos",
+          text: "El nombre y usuario deben tener al menos 3 caracteres.",
+        });
+      }
+
+      if (!this.isPhoneValid(phone)) {
+        return Swal.fire({
+          icon: "warning",
+          title: "Teléfono inválido",
+          text: "El número debe tener exactamente 9 dígitos.",
+        });
+      }
+
       if (!this.validateEmail(this.localUser.email)) {
         await Swal.fire({
           icon: "warning",
